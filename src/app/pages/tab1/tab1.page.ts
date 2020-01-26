@@ -3,35 +3,50 @@ import { NoticiasService } from 'src/app/services/noticias.service';
 import { Article } from 'src/app/interfaces/interfaces';
 
 @Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+	selector: 'app-tab1',
+	templateUrl: 'tab1.page.html',
+	styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page implements OnInit {
 
-  public noticias: Article[] = [];
+	public noticias: Article[] = [];
 
-  constructor(
-    private noticiasService: NoticiasService
-  ) { }
+	constructor(
+		private noticiasService: NoticiasService
+	) { }
 
-  ngOnInit() {
+	ngOnInit() {
 
-    this.obtenerNoticias();
-  }
+		this.obtenerNoticias();
+	}
 
-  public obtenerNoticias() {
+	public obtenerNoticias(evento?: any) {
 
-    this.noticiasService
-      .getTopHeadLines()
-      .subscribe
-      (
-        (d) => {
+		this.noticiasService
+			.getTopHeadLines()
+			.subscribe
+			(
+				(d) => {
 
-          this.noticias.push(...d.articles);
+					if (evento) {
 
-          console.log("noticias", d);
-        }
-      );
-  }
+						evento.target.complete();
+					}	
+
+					if (d.articles.length === 0 && evento) {
+
+						evento.target.disabled = true;
+
+						return;
+					}						
+
+					this.noticias.push(...d.articles);									
+				}				
+			);
+	}
+
+	public loadData(evento: any): void {
+
+		this.obtenerNoticias(evento);
+	}
 }

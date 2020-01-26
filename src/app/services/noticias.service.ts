@@ -8,36 +8,50 @@ const apiKey = environment.apiKey;
 const apiUrl = environment.apiUrl;
 
 const headers = new HttpHeaders({
-  'X-Api-Key': apiKey
+	'X-Api-Key': apiKey
 });
 
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class NoticiasService {
 
-  private topHeadlinesPage: number = 0;
+	private topHeadlinesPage: number = 0;
 
-  constructor(
-    private http: HttpClient
-  ) { }
+	private categoriaAnterior: string = String();
 
-  private ejecutarQuery<T>(query: string) {
+	private categoriaPage: number = 0;
 
-    return this.http
-      .get<T>(`${apiUrl}${query}`, { headers });
-  }
+	constructor(
+		private http: HttpClient
+	) { }
 
-  public getTopHeadLines() {
+	private ejecutarQuery<T>(query: string) {
 
-    this.topHeadlinesPage++;
+		return this.http
+			.get<T>(`${apiUrl}${query}`, { headers });
+	}
 
-    return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=us&page=${this.topHeadlinesPage}`);    
-  }
+	public getTopHeadLines() {
 
-  public getTopHeadLinesCategorias(categoria: string) {
+		this.topHeadlinesPage++;
 
-    return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=us&category=${categoria}`);      
-  }
+		return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=us&page=${this.topHeadlinesPage}`);
+	}
+
+	public getTopHeadLinesCategorias(categoria: string) {
+		
+		// reiniciamos el paginador.
+		if (this.categoriaAnterior !== categoria) {
+
+			this.categoriaAnterior = categoria;
+
+			this.categoriaPage = 0;
+		}
+
+		this.categoriaPage++;
+
+		return this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=us&category=${categoria}&page=${this.categoriaPage}`);
+	}
 }

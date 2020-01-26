@@ -1,58 +1,75 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { IonSegment } from '@ionic/angular';
+import { IonSegment, IonContent } from '@ionic/angular';
 import { NoticiasService } from 'src/app/services/noticias.service';
 import { RespuestaTopHeadlines, Article } from 'src/app/interfaces/interfaces';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+	selector: 'app-tab2',
+	templateUrl: 'tab2.page.html',
+	styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page implements OnInit {
 
-  @ViewChild('segment', { static: false }) segment: IonSegment;
+	@ViewChild(IonContent,	{ static: false }) content: IonContent;
+	@ViewChild('segment', { static: false }) segment: IonSegment;
 
-  public categorias = ['business', 'entretaiment', 'general', 'health', 'science', 'sports', 'technology'];
+	public categorias = ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'];
 
-  public noticias: Article[] = [];
+	public noticias: Article[] = [];
 
-  constructor(
-    private noticiasService: NoticiasService
-  ) { }
+	constructor(
+		private noticiasService: NoticiasService
+	) { }
 
-  ngAfterViewInit() {
-    
-    this.segment.value = this.categorias[0];
+	ngAfterViewInit() {
 
-    this.obtenerNoticias(this.categorias[0]);
-  }
+		this.segment.value = this.categorias[0];
 
-  ngOnInit () {
-    
-  }
+		this.obtenerNoticias(this.categorias[0]);
+	}
 
-  public obtenerNoticias(categoria: string): void {    
+	ngOnInit() {
 
-    this.noticiasService
-      .getTopHeadLinesCategorias(categoria)
-      .subscribe
-      (
-        (d) => {
-          
-          this.noticias.push(...d.articles);
-        }
-      )
-  }
+	}
 
-  public segmentChange(evento: any): void {
+	public obtenerNoticias(categoria: string, evento?: any): void {
 
-    this.noticias = [];
+		this.noticiasService
+			.getTopHeadLinesCategorias(categoria)
+			.subscribe
+			(
+				(d) => {
 
-    this.obtenerNoticias(evento.detail.value);
-  }
+					if (d.articles.length === 0 && evento) {
 
-  public loadData(evento: any): void {
+						evento.target.disabled = true;
 
-    this.obtenerNoticias(this.segment.value);
-  }
+						return;
+					}
+
+					this.noticias.push(...d.articles);
+
+					if (evento) {
+
+						evento.target.complete();
+					}
+					else {
+
+						this.content.scrollToTop(2000);
+					}					
+				}
+			)
+	}
+
+	public segmentChange(evento: any): void {
+
+		this.noticias = [];
+
+		this.obtenerNoticias(evento.detail.value);
+	}
+
+	public loadData(evento: any): void {
+
+		this.obtenerNoticias(this.segment.value, evento);
+	}
 }
