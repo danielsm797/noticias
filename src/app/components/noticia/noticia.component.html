@@ -1,19 +1,26 @@
-<ion-card color="dark" (click)="abrirNoticia();">
+<ion-card color="light" mode="ios" class="animated fadeIn slow">
 
   <ion-card-header>
 
     <ion-card-subtitle>
       <span class="text-primary">{{ posicion }}. </span>
       <span class="noticia-source-name">{{ noticia.source.name }}</span>
+
+      <div class="noticia-more">
+        <ion-button fill="clear" (click)="lanzarMenu()">
+          <ion-icon slot="icon-only" name="more"></ion-icon>
+        </ion-button>
+      </div>
+
     </ion-card-subtitle>
 
-    <ion-card-title>
+    <ion-card-title (click)="abrirNoticia();">
       {{ noticia.title }}
     </ion-card-title>
 
   </ion-card-header>
 
-  <ion-img *ngIf="noticia.urlToImage" [src]="noticia.urlToImage"></ion-img>
+  <ion-img *ngIf="noticia.urlToImage" (click)="abrirNoticia();" [src]="noticia.urlToImage"></ion-img>
 
   <ion-card-content>
     <p>

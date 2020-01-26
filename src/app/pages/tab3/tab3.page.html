@@ -1,9 +1,29 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header no-border mode="ios">
+  <ion-toolbar color="primary" mode="ios">
     <ion-title>
-      Tab Three
+      favorite news
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content color="light">
+
+  <app-noticias *ngIf="dataLocal.noticias.length > 0" [noticias]="dataLocal.noticias" [favorito]="true"></app-noticias>
+
+  <ion-slides padding [options]="slideOpts" *ngIf="dataLocal.noticias.length === 0" >
+
+    <ion-slide>
+
+      <ion-label>
+        <ion-icon class="fs-icon" name="information-circle-outline"></ion-icon>
+        <h1>Señor usuario,</h1>
+        <p>
+          no se han encontrado favoritos.
+        </p>
+      </ion-label>
+
+    </ion-slide>
+
+  </ion-slides>
+
+</ion-content>
